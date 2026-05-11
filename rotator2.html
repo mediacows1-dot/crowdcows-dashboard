@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrowdCows — Dashboards</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0e0610; }
+    iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+    #bar {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      background: rgba(255,255,255,0.05);
+      z-index: 99;
+    }
+    #progress {
+      height: 100%;
+      background: #c42040;
+      animation: fill 60s linear forwards;
+    }
+    @keyframes fill { from { width: 0% } to { width: 100% } }
+    #dots {
+      position: fixed;
+      bottom: 10px; right: 14px;
+      display: flex; gap: 6px;
+      z-index: 99;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+    .dot.active { background: #c42040; }
+  </style>
+  <script>
+    // Bepaal welk dashboard aan de beurt is op basis van huidige minuut
+    var URLS = [
+      'https://script.google.com/macros/s/AKfycbx1AdvA2AotV_YPbgumFc8XHMrjOxCwiPsMMzKPdAiQfqB1xuf98-IQ-W1ebiNJEuwM/exec',
+      'https://script.google.com/macros/s/AKfycbzLwxu5DksV-_gbsynHw3tSQxrr0eQbvlrhBoRr9EI2YavTLgjrLWtEVKLKK5MdywJR/exec'
+    ];
+    var SECS = 60;
+
+    // Welk dashboard nu?
+    var d = Math.floor(Date.now() / (SECS * 1000)) % URLS.length;
+
+    // Seconden tot volgende wissel
+    var remaining = SECS - (Math.floor(Date.now() / 1000) % SECS);
+
+    // Meta refresh instellen — herlaadt de hele pagina na 'remaining' seconden
+    // Dan pakt de bovenstaande berekening automatisch het volgende dashboard
+    document.write('<meta http-equiv="refresh" content="' + remaining + '">');
+  </script>
+</head>
+<body>
+
+  <iframe id="dash"></iframe>
+
+  <div id="bar"><div id="progress"></div></div>
+  <div id="dots">
+    <div class="dot" id="dot-0"></div>
+    <div class="dot" id="dot-1"></div>
+  </div>
+
+  <script>
+    // Laad het juiste dashboard in het iframe
+    document.getElementById('dash').src = URLS[d];
+
+    // Activeer de juiste dot
+    document.getElementById('dot-' + d).classList.add('active');
+  </script>
+
+</body>
+</html>
