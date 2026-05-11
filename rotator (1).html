@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrowdCows — Dashboard Rotator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0e0610; overflow: hidden; width: 100vw; height: 100vh; }
+
+    iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+      transition: opacity 0.8s ease;
+    }
+
+    #frame-a { opacity: 1; z-index: 2; }
+    #frame-b { opacity: 0; z-index: 1; }
+
+    #indicator {
+      position: fixed;
+      bottom: 12px;
+      right: 16px;
+      z-index: 99;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: background 0.4s;
+    }
+    .dot.active { background: #c42040; }
+  </style>
+</head>
+<body>
+
+  <iframe id="frame-a" src="https://script.google.com/macros/s/AKfycbx1AdvA2AotV_YPbgumFc8XHMrjOxCwiPsMMzKPdAiQfqB1xuf98-IQ-W1ebiNJEuwM/exec" allow="autoplay"></iframe>
+  <iframe id="frame-b" src="https://script.google.com/macros/s/AKfycbzLwxu5DksV-_gbsynHw3tSQxrr0eQbvlrhBoRr9EI2YavTLgjrLWtEVKLKK5MdywJR/exec" allow="autoplay"></iframe>
+
+  <div id="indicator">
+    <div class="dot active" id="dot-a"></div>
+    <div class="dot" id="dot-b"></div>
+  </div>
+
+  <script>
+    var INTERVAL_MS = 60 * 1000; // 1 minuut per dashboard
+
+    var frameA   = document.getElementById('frame-a');
+    var frameB   = document.getElementById('frame-b');
+    var dotA     = document.getElementById('dot-a');
+    var dotB     = document.getElementById('dot-b');
+    var showingA = true;
+
+    function toggle() {
+      if (showingA) {
+        frameB.style.zIndex  = 3;
+        frameA.style.zIndex  = 2;
+        frameB.style.opacity = 1;
+        frameA.style.opacity = 0;
+        dotA.classList.remove('active');
+        dotB.classList.add('active');
+      } else {
+        frameA.style.zIndex  = 3;
+        frameB.style.zIndex  = 2;
+        frameA.style.opacity = 1;
+        frameB.style.opacity = 0;
+        dotB.classList.remove('active');
+        dotA.classList.add('active');
+      }
+      showingA = !showingA;
+    }
+
+    setInterval(toggle, INTERVAL_MS);
+  </script>
+
+</body>
+</html>
